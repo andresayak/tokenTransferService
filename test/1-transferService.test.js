@@ -22,8 +22,10 @@ describe("TransferService", () => {
   });
 
   const createTransfer = async (amount, feeRate) => {
+
     const fee = Math.floor(amount * feeRate / 100);
     const [owner, user1] = await ethers.getSigners();
+    const balanceBefore = await this.token1.balanceOf(user1.address);
     await this.token1.approve(this.service.address, amount);
     let tx = await this.service.createTransfer(this.token1.address, owner.address, user1.address, amount);
     let receipt = await tx.wait();
@@ -36,6 +38,10 @@ describe("TransferService", () => {
     expect(event.args.amount).to.equal(amount);
     expect(event.args.fee.toString()).to.equal(fee.toString());
     expect(event).to.not.false;
+
+    const balanceAfter = await this.token1.balanceOf(user1.address);
+    expect(balanceAfter).to.equal(balanceBefore.add(amount - fee));
+
   }
 
   describe("CreateToken", () => {

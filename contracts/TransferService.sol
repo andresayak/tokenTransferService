@@ -63,10 +63,6 @@ contract TransferService is Ownable{
         emit AddFee(_from, _to, _fee);
     }
 
-    function addFee(uint256 _from, uint256 _to, uint8 _fee) external onlyOwner{
-        _addFee(_from, _to, _fee);
-    }
-
     function getBalances(address _account, address[] calldata _tokens) external view returns (uint256[] memory){
         uint[] memory _balances = new uint[](_tokens.length);
         for (uint i=0; i<fees.length; i++) {
