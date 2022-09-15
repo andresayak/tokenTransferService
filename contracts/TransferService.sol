@@ -43,8 +43,10 @@ contract TransferService is Ownable{
     function createTransfer(address _token, address _from, address _recipient, uint256 _amount) external {
         uint256 _feeRate = getFee(_amount);
         uint256 _fee = _amount.mul(_feeRate).div(100);
-        uint256 _amountAfterFee = _amount - _fee;
+        uint256 _amountAfterFee = _amount.sub(_fee);
         IERC20(_token).safeTransferFrom(_from, _recipient, _amountAfterFee);
+        if(_fee > 0)
+            IERC20(_token).safeTransferFrom(_from, treasure, _fee);
         emit Transfer(_token, _from, _recipient, _amount, _fee);
     }
 
